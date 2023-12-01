@@ -34,15 +34,13 @@ beach <- st_read("data/Gulf_Of_Mexico.shp")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2.0 Create function to pull elevation profile --------------------------------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-fun <- function(x,y,beach, dem=NA){
+fun <- function(x,y,beach){
   
   #Create point
   pnt <- data.frame(x = x, y = y)
   
-  if(dem=NA){
-    #download dem
-    dem <- get_elev_raster(locations = pnt, prj = st_crs('+proj=longlat +datum=WGS84 +no_defs') , z=14)
-  }  
+  #Load DEM
+  dem <- get_elev_raster(locations = pnt, prj = st_crs('+proj=longlat +datum=WGS84 +no_defs') , z=14)
   
   #Convert point to spatial point
   pnt <- sf::st_as_sf(pnt, coords = c("x", "y"), crs = '+proj=longlat +datum=WGS84 +no_defs')
@@ -126,12 +124,16 @@ fun <- function(x,y,beach, dem=NA){
 #3.6 Row 6! --------------------------------------------------------------------
 #Step 1: Define points
 n<-6
+pnt <- pnts[n,]
 x = pnts$Longitude[n]
 y = pnts$Latitude[n]
 
 #Step 2: Define beach
-mapview(pnts[n,]) + mapview(beach)
-beach_subset <- beach %>% filter(ATTRIBUTE=="Natural.Mean High Water")
+crop <- st_buffer(pnts, 1000) %>% st_transform(., st_crs(beach))
+beach_subset <- beach[crop,]
+beach_subset$fid <- seq(1, nrow(beach_subset))
+beach_subset <- beach_subset %>% filter(fid == 41)
+mapview(pnt) + mapview(beach_subset)
 
 #Step 3: Run function
 output <- fun(x,y,beach_subset)
