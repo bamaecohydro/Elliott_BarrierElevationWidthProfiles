@@ -120,17 +120,17 @@ fun <- function(x,y,beach){
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 3.0 Apply function to points -------------------------------------------------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#3.6 Row 6! --------------------------------------------------------------------
+#3.1 Article 48 --------------------------------------------------------------------
 #Step 1: Define points
-n<-6
-pnt <- pnts[n,]
-x = pnts$Longitude[n]
-y = pnts$Latitude[n]
+pnt <- pnts %>% filter(Article == 48)
+x = pnt$Longitude
+y = pnt$Latitude
 
 #Step 2: Define beach
 crop <- st_buffer(pnts, 1000) %>% st_transform(., st_crs(beach))
 beach_subset <- beach[crop,]
 beach_subset$fid <- seq(1, nrow(beach_subset))
+mapview(pnt) + mapview(beach_subset)
 beach_subset <- beach_subset %>% filter(fid == 73)
 mapview(pnt) + mapview(beach_subset)
 
@@ -142,7 +142,7 @@ p <- output %>%
   filter(dist>1200) %>% 
   ggplot(aes(x=dist, y = ele)) +
     #line
-    geom_line(lty=2, lwd=0.5) +
+    geom_line(lty=1, lwd=0.25) +
     #Add predefined black/white theme
     theme_bw() +
     #Change font size of axes
@@ -157,4 +157,111 @@ p <- output %>%
 #Make plot interactive
 ggplotly(p)
 
+#3.2 Article 8 --------------------------------------------------------------------
+#Step 1: Define points
+pnt <- pnts %>% filter(Article == 8)
+x = pnt$Longitude
+y = pnt$Latitude
+
+#Step 2: Define beach
+crop <- st_buffer(pnts, 1000) %>% st_transform(., st_crs(beach))
+beach_subset <- beach[crop,]
+beach_subset$fid <- seq(1, nrow(beach_subset))
+mapview(pnt) + mapview(beach_subset)
+beach_subset <- beach_subset %>% filter(fid == 192)
+mapview(pnt) + mapview(beach_subset)
+
+#Step 3: Run function
+output <- fun(x,y,beach_subset)
+
+#Step 4: Create interactive plot
+p <- output %>% 
+  filter(dist>0) %>% 
+  ggplot(aes(x=dist, y = ele)) +
+  #line
+  geom_line(lty=1, lwd=0.25) +
+  #Add predefined black/white theme
+  theme_bw() +
+  #Change font size of axes
+  theme(
+    axis.title.y = element_text(size = 14), 
+    axis.text.y  = element_text(size = 10)
+  ) + 
+  #Add labels
+  xlab("Distance [m]") + 
+  ylab("Elevation [m]") 
+
+#Make plot interactive
+ggplotly(p)
+
+#3.3 Article 6 --------------------------------------------------------------------
+#Step 1: Define points
+pnt <- pnts %>% filter(Article == 6)
+x = pnt$Longitude
+y = pnt$Latitude
+
+#Step 2: Define beach
+#digitize shapefile of beach and load into R here
+#make sure shapefile is in same CRS
+#use in function below
+
+#Step 3: Run function
+output <- fun(x,y,beach_subset)
+
+#Step 4: Create interactive plot
+p <- output %>% 
+  filter(dist>0) %>% 
+  ggplot(aes(x=dist, y = ele)) +
+  #line
+  geom_line(lty=1, lwd=0.25) +
+  #Add predefined black/white theme
+  theme_bw() +
+  #Change font size of axes
+  theme(
+    axis.title.y = element_text(size = 14), 
+    axis.text.y  = element_text(size = 10)
+  ) + 
+  #Add labels
+  xlab("Distance [m]") + 
+  ylab("Elevation [m]") 
+
+#Make plot interactive
+ggplotly(p)
+
+#3.4 Article 36 --------------------------------------------------------------------
+#Step 1: Define points
+pnt <- pnts %>% filter(Article == 36)
+x = pnt$Longitude
+y = pnt$Latitude
+
+#Step 2: Define beach
+crop <- st_buffer(pnts, 1000) %>% st_transform(., st_crs(beach))
+beach_subset <- beach[crop,]
+beach_subset$fid <- seq(1, nrow(beach_subset))
+mapview(pnt) + mapview(beach_subset)
+beach_subset <- beach_subset %>% filter(fid == 198)
+mapview(pnt) + mapview(beach_subset)
+
+#Step 3: Run function
+output <- fun(x,y,beach_subset)
+
+#Step 4: Create interactive plot
+p <- output %>% 
+  filter(dist>0) %>% 
+  ggplot(aes(x=dist, y = ele)) +
+  #line
+  geom_line(lty=1, lwd=0.25) +
+  #Add predefined black/white theme
+  theme_bw() +
+  #Change font size of axes
+  theme(
+    axis.title.y = element_text(size = 14), 
+    axis.text.y  = element_text(size = 10)
+  ) + 
+  #Add labels
+  xlab("Distance [m]") + 
+  ylab("Elevation [m]") 
+
+#Make plot interactive
+ggplotly(p)
 
