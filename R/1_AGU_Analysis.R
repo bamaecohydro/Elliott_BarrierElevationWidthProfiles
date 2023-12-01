@@ -17,8 +17,7 @@ library(raster)
 library(sf)
 library(elevatr)
 library(mapview)
-library(dygraphs)
-library(xts)
+library(plotly)
 
 #defining watershed outline for Site 62
 pnts <- read_csv("data/data.csv") %>% 
@@ -132,9 +131,30 @@ y = pnts$Latitude[n]
 crop <- st_buffer(pnts, 1000) %>% st_transform(., st_crs(beach))
 beach_subset <- beach[crop,]
 beach_subset$fid <- seq(1, nrow(beach_subset))
-beach_subset <- beach_subset %>% filter(fid == 41)
+beach_subset <- beach_subset %>% filter(fid == 73)
 mapview(pnt) + mapview(beach_subset)
 
 #Step 3: Run function
 output <- fun(x,y,beach_subset)
+
+#Step 4: Create interactive plot
+p <- output %>% 
+  filter(dist>1200) %>% 
+  ggplot(aes(x=dist, y = ele)) +
+    #line
+    geom_line(lty=2, lwd=0.5) +
+    #Add predefined black/white theme
+    theme_bw() +
+    #Change font size of axes
+    theme(
+      axis.title.y = element_text(size = 14), 
+      axis.text.y  = element_text(size = 10)
+    ) + 
+    #Add labels
+    xlab("Distance [m]") + 
+    ylab("Elevation [m]") 
+
+#Make plot interactive
+ggplotly(p)
+
 
