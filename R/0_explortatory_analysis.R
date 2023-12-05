@@ -132,7 +132,7 @@ dygraph_ts_fun<-function(transect_pnts){
 }
 
 
-plot(transect_pnts$dist, transect_pnts$ele)
+dygraphs(output$dist, output$ele)
 
 
 
